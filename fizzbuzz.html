@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<script>
+function generateGrid() {
+	var d = document.getElementById("fb-grid");
+	var table = document.createElement("table");
+	d.appendChild(table);
+	for (var i = 0; i < 10; i++) {
+		var row = document.createElement("tr");
+		for (var j = 1; j <= 10; j++) {
+			var cell = document.createElement("td");
+			cell.innerHTML = i * 10 + j ;
+			cell.setAttribute("id", "cell_" + (i * 10 + j ));
+			row.appendChild(cell);
+		}
+		table.appendChild(row);
+	}
+}
+//variable to keep current number of the game
+var current_number = 1;
+//dfine function play
+function play()
+{
+	//call the cell colourin function
+	colourCurrentCell(current_number);
+	//if the answer is correct
+	if (check_answer(current_number))
+	{
+		//ask the computer fo its answer
+		ai_turn(current_number);
+	}
+	//if it is wrong
+	else
+	{
+		//restart function an print `you lose message`
+		restart();
+		addMessage("You lose. Start again");
+	}
+	//when the current number is larger than 99
+	if (current_number > 99)
+	{
+		//restart function
+		restart();
+		//print you win message
+		addMessage("You win. Start again");
+	}
+	//delete the text in submission text box
+	document.getElementById("submission").value = "";
+}
+//define function checkKey
+function checkKey()
+{
+	//if key pressed is enter key
+	if (event.keyCode == 13)
+	{
+		//call play() function
+		play();
+	}
+}
+//define function restart
+function restart()
+{
+	//call reset_grid() function
+	reset_grid();
+	//set current_number back to 1
+	current_number = 1;
+
+}
+//define function colourCurrentCell, take curent number as argument
+function colourCurrentCell(current_num)
+{
+	//if the number is divisible by 3 and
+	if (current_num % 3 == 0 && current_num % 5 == 0)
+	{
+		//color the current cell `green`
+		document.getElementById("cell_" + current_num).style.backgroundColor = "green";
+	}
+	//if it is only divisible by 3
+	else if (current_num % 3 == 0)
+	{
+		//color the curren cell `blue`
+		document.getElementById("cell_" + current_num).style.backgroundColor = "blue";
+	}
+	//if it is only divisble by 5
+	else if (current_num % 5 == 0)
+	{
+		//color the curent cell `yellow`
+		document.getElementById("cell_" + current_num).style.backgroundColor = "yellow";
+	}
+	//if not divisble by either
+	else
+	{
+		//color the curent cell `cornflowerblue`
+		document.getElementById("cell_" + current_num).style.backgroundColor = "cornflowerblue"
+	}
+}
+//define function reset_grid
+function reset_grid()
+{
+	//loop iterator `i` from 1 to 100
+	for (var i = 1; i < 101; i++)
+	{
+	//color the cell number `i` white
+	document.getElementById("cell_" + i).style.backgroundColor = "white";
+	}
+}
+//define function ai_turn, take current number as argument
+function ai_turn(current_num)
+{
+	//get random number between 0 and 100
+	var ai_error = (Math.random() * 100);
+	//if random number is lower than 95
+	if (ai_error < 95)
+	{
+		//colour the ai's number
+		colourCurrentCell(current_num);
+		//increment the curent number
+		current_number++;
+		//and return it
+		return current_num;
+	}
+	//if random number is greater than 95
+	else
+	{
+		//call restart function
+		restart();
+		//print you win message
+		addMessage("You win. Start again");
+		//return random number rounded down to the nearest integer
+		return Math.floor(ai_error);
+	}
+}
+//define function check_answer, take curent numer as argument
+function check_answer(current_num)
+{
+	//assign the user input to a variable
+	var input = document.getElementById("submission").value;
+	//if current number is divisble by both 3 and 5
+	if (current_num % 3 == 0 && current_num % 5 == 0)
+	{
+		//convert input to lowercase and compare to desired answer
+		//if it is correct
+		if (input.toLowerCase() == "fizzbuzz")
+		{
+		//increment curent number
+		current_number++;
+		//print corect message
+		addMessage("Correct");
+		//return true
+		return true;
+		}
+		//if the answer is not right
+		else
+		{
+		//print wrong message
+		addMessage("Wrong");
+		//return false
+		return false;
+		}
+	}
+	else if (current_num % 3 ==0)
+	{
+		//convert input to lowercase and compare to desired answer
+		//if it is correct
+		if (input.toLowerCase() == "fizz")
+		{
+		//increment curent number
+		current_number++;
+		//print corect message
+		addMessage("Correct");
+		//return true
+		return true;
+		}
+		//if the answer is not right
+		else
+		{
+		//print wrong message
+		addMessage("Wrong");
+		//return false
+		return false;
+		}
+	}
+	else if (current_num % 5 ==0)
+	{
+		//convert input to lowercase and compare to desired answer
+		//if it is correct
+		if (input.toLowerCase() == "buzz")
+		{
+		//increment curent number
+		current_number++;
+		//print corect message
+		addMessage("Correct");
+		//return true
+		return true;
+		}
+		//if the answer is not right
+		else
+		{
+		//print wrong message
+		addMessage("Wrong");
+		//return false
+		return false;
+		}
+	}
+	//if current number is not divisble by either 3 or 5
+	//compare user input to current_number
+	//if it is equal
+	else if (current_num == input)
+	{
+		//increment current number
+		current_number++;
+		//print correct message
+		addMessage("Correct");
+		//return true
+		return true;
+	}
+	//if it is not equal
+	else
+	{
+		//print wrong message
+		addMessage("Wrong");
+		//return false
+		return false;
+	}
+}
+//define function addMessage
+function addMessage(message)
+{
+	//assign new element "p" to a variable
+	var paragraph = document.createElement("p");
+	//change the innerHTML of that variable to be the argument
+	paragraph.innerHTML = message;
+	//find where to put the new element
+	var play_element = document.getElementById("play");
+	//insert new element as the first child of the parent
+	play_element.insertBefore(paragraph, play_element.firstChild);
+}
+
+window.onload = function() {
+	generateGrid();
+};
+</script>
+<title>Fizzbuzz Game</title>
+</head>
+<body>
+<div style = "width: 45%;float:left;">
+<h2> Let's play FizzBuzz </h2>
+<input onkeypress="checkKey()" id="submission">
+<button onclick="play()">Submit</button>
+<div id="play"></div></div><div id="fb-grid" style="width: 45%;float:left;"></div>
+</body>
+
+</html>
